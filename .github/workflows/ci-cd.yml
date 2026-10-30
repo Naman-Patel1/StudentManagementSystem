@@ -1,0 +1,37 @@
+
+name: Student Management System CI-CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout GitHub Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mysqli
+
+      - name: Check PHP Syntax
+        run: |
+          find src -name "*.php" -exec php -l {} \;
+
+      - name: Build Docker Image
+        run: docker build -t student-management:latest .
+
+      - name: Verify Docker Image
+        run: docker image inspect student-management:latest
+
+      - name: CI/CD Pipeline Completed
+        run: echo "Build and tests completed successfully!"
